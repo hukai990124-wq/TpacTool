@@ -32,6 +32,8 @@ namespace TpacTool.Lib
 		public IReadOnlyList<AssetItem> LoadedAssets { private set; get; }
 #endif
 
+		public Exception LoadError { private set; get; }
+
 		//public Dictionary<Guid, AbstractExternalLoader> FixedExternalData { private set; get; }
 
 		// return true for continuing. false for halt
@@ -55,6 +57,7 @@ namespace TpacTool.Lib
 
 		public virtual void Load(DirectoryInfo assetDir)
 		{
+			LoadError = null;
 			if (!assetDir.Exists)
 				throw new FileNotFoundException("Asser folder not exists: " + assetDir.FullName);
 			WorkDir = assetDir;
@@ -63,15 +66,16 @@ namespace TpacTool.Lib
 
 		public virtual void Load(DirectoryInfo assetDir, ProgressCallback callback)
 		{
+			LoadError = null;
 			if (!assetDir.Exists)
 				throw new FileNotFoundException("Asser folder not exists: " + assetDir.FullName);
 			WorkDir = assetDir;
 #if NETSTANDARD1_3
-			LoadDo(callback);
+			LoadDoWithErrorReporting(callback);
 #else
 			Thread thread = new Thread(() =>
 			{
-				LoadDo(callback);
+				LoadDoWithErrorReporting(callback);
 			});
 			thread.Name = "Asset Loader";
 			thread.IsBackground = true;
@@ -84,21 +88,30 @@ namespace TpacTool.Lib
 			bool reportProgress = callback != null;
 			List<FileInfo> files = null;
 #if !NETSTANDARD1_3
+			var searchResult = new PackageSearchResult();
 			Thread thread = new Thread(() =>
 			{
 				try
 				{
-					var fs = WorkDir.EnumerateFiles("*.tpac", SearchOption.AllDirectories).ToList();
-					files = fs;
+					searchResult.Files = WorkDir.EnumerateFiles("*.tpac", SearchOption.AllDirectories).ToList();
 				}
 				catch (ThreadAbortException)
 				{
+					throw;
+				}
+				catch (Exception error)
+				{
+					searchResult.Error = error;
+				}
+				finally
+				{
+					searchResult.Completed = true;
 				}
 			});
 			thread.Name = "Tpac Searcher";
 			thread.IsBackground = true;
 			thread.Start();
-			while (true)
+			while (!searchResult.Completed)
 			{
 				if (reportProgress && !callback(-1, -1, String.Empty, false))
 				{
@@ -107,11 +120,12 @@ namespace TpacTool.Lib
 					InterruptLoading();
 					return;
 				}
-				if (files != null)
-					break;
 				Thread.Sleep(100);
 				Thread.Yield();
 			}
+			if (searchResult.Error != null)
+				throw new IOException("Failed to search for TPAC packages in " + WorkDir.FullName, searchResult.Error);
+			files = searchResult.Files;
 #else
 			files = WorkDir.EnumerateFiles("*.tpac", SearchOption.AllDirectories).ToList();
 #endif
@@ -125,7 +139,15 @@ namespace TpacTool.Lib
 					InterruptLoading();
 					return;
 				}
-				var package = new AssetPackage(file.FullName);
+				AssetPackage package;
+				try
+				{
+					package = new AssetPackage(file.FullName);
+				}
+				catch (Exception error)
+				{
+					throw new AssetPackageLoadException(file.FullName, error);
+				}
 				package.IsGuidLocked = true;
 				_loadedPackages.Add(package);
 				_packageLookup[package.Guid] = package;
@@ -142,6 +164,47 @@ namespace TpacTool.Lib
 				return;
 			}
 		}
+
+		private void LoadDoWithErrorReporting(ProgressCallback callback)
+		{
+			try
+			{
+				LoadDo(callback);
+			}
+			catch (Exception error)
+			{
+				LoadError = error;
+				InterruptLoading();
+				if (callback == null)
+					return;
+
+				try
+				{
+					callback(-1, -1, GetErrorPath(error), true);
+				}
+				catch (Exception callbackError)
+				{
+					LoadError = new AggregateException(
+						"The progress callback also failed while reporting the package load error.",
+						error, callbackError);
+				}
+			}
+		}
+
+		private string GetErrorPath(Exception error)
+		{
+			var packageError = error as AssetPackageLoadException;
+			return packageError != null ? packageError.PackagePath : WorkDir.FullName;
+		}
+
+#if !NETSTANDARD1_3
+		private sealed class PackageSearchResult
+		{
+			public volatile bool Completed;
+			public List<FileInfo> Files;
+			public Exception Error;
+		}
+#endif
 
 		protected virtual void InterruptLoading()
 		{

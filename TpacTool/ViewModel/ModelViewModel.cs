@@ -378,11 +378,18 @@ namespace TpacTool
 				var path = _saveFileDialog.FileName;
 
 				MessengerInstance.Send(string.Format("Export {0} ...", Asset.Name), MainViewModel.StatusEvent);
-				if (AssimpModelExporter.IsAssimpAvailable())
-					AssimpModelExporter.ExportToFile(path, Asset, skeleton, option);
-				else
-					ModelExporter.ExportToFile(path, Asset, skeleton, option);
-				MessengerInstance.Send(string.Format("{0} exported", Asset.Name), MainViewModel.StatusEvent);
+				try
+				{
+					if (AssimpModelExporter.IsAssimpAvailable())
+						AssimpModelExporter.ExportToFile(path, Asset, skeleton, option);
+					else
+						ModelExporter.ExportToFile(path, Asset, skeleton, option);
+					MessengerInstance.Send(string.Format("{0} exported", Asset.Name), MainViewModel.StatusEvent);
+				}
+				catch (Exception error)
+				{
+					ErrorReporter.Show(ErrorReporter.GetResourceString("ErrorOperation_ExportModel"), Asset.Name, path, error);
+				}
 			}
 		}
 

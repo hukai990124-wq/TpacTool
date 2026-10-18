@@ -563,6 +563,60 @@ The exporting frame rate should match the frame rate of the modeling software yo
   <data name="Msgbox_Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="Msgbox_OperationFailed" xml:space="preserve">
+    <value>The {0} operation failed for {1}.&#10;Path: {2}&#10;Likely cause: {3}&#10;Exception details:&#10;{4}</value>
+  </data>
+  <data name="Error_UnknownItem" xml:space="preserve">
+    <value>unknown item</value>
+  </data>
+  <data name="Error_UnknownPath" xml:space="preserve">
+    <value>unknown path</value>
+  </data>
+  <data name="ErrorOperation_BuildAssetList" xml:space="preserve">
+    <value>Build asset list</value>
+  </data>
+  <data name="ErrorOperation_LoadPackage" xml:space="preserve">
+    <value>Load TPAC package</value>
+  </data>
+  <data name="ErrorOperation_FindPackages" xml:space="preserve">
+    <value>Find TPAC packages</value>
+  </data>
+  <data name="ErrorOperation_ExportModel" xml:space="preserve">
+    <value>Export model</value>
+  </data>
+  <data name="ErrorOperation_ExportTexture" xml:space="preserve">
+    <value>Export texture</value>
+  </data>
+  <data name="ErrorOperation_ExportMaterial" xml:space="preserve">
+    <value>Export material</value>
+  </data>
+  <data name="ErrorOperation_ExportAnimation" xml:space="preserve">
+    <value>Export animation</value>
+  </data>
+  <data name="ErrorCause_TruncatedOrCorrupt" xml:space="preserve">
+    <value>The file ended unexpectedly or its contents are damaged.</value>
+  </data>
+  <data name="ErrorCause_InvalidData" xml:space="preserve">
+    <value>The file contains invalid or inconsistent data.</value>
+  </data>
+  <data name="ErrorCause_UnsupportedFormat" xml:space="preserve">
+    <value>This file format or version is not supported.</value>
+  </data>
+  <data name="ErrorCause_AccessDenied" xml:space="preserve">
+    <value>Access was denied. Check the file permissions and whether another program is locking it.</value>
+  </data>
+  <data name="ErrorCause_MissingFile" xml:space="preserve">
+    <value>A required file or directory could not be found.</value>
+  </data>
+  <data name="ErrorCause_FileSystem" xml:space="preserve">
+    <value>A file system error occurred. Check available disk space and file access.</value>
+  </data>
+  <data name="ErrorCause_MissingDependency" xml:space="preserve">
+    <value>A referenced asset could not be resolved. The package may be incomplete or depend on another package.</value>
+  </data>
+  <data name="ErrorCause_Unknown" xml:space="preserve">
+    <value>The cause could not be identified. See the exception details below.</value>
+  </data>
   <data name="Preview_Center" xml:space="preserve">
     <value>Focus:</value>
   </data>

@@ -1,8 +1,8 @@
-version: 0.4.1.{build}
+version: 0.4.2.{build}
 
 environment:
-  exe_version: 0.4.1
-  lib_version: 0.4.1
+  exe_version: 0.4.2
+  lib_version: 0.4.2
   github_token:
     secure: TXxOh3NI3UV0tNKI9snSVmZPFKvpqfhJgDpr7M9GDLS9DSX32P9NGdjIWVwYX+Mc
   appveyor_token:
@@ -58,8 +58,8 @@ deploy:
   - provider: GitHub
     tag: $(APPVEYOR_REPO_TAG_NAME)
     description: |
-      Fixes model export crashes when a mesh references a missing primary material, including the affected mebody, mebody2, and meleg models.
-      Contributor: OpenAI Codex.
+      Reports TPAC package loading and asset export failures with the affected path, likely cause, and exception details.
+      Co-authors: hukai990124-wq and OpenAI Codex.
     auth_token: $(github_token)
     artifact: TpacToolExe
     draft: false

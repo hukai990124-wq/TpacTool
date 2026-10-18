@@ -157,6 +157,7 @@
     <Compile Include="Util\BooleanFlipConverter.cs" />
     <Compile Include="Util\BooleanVisibilityConverter.cs" />
     <Compile Include="Util\EnumEqualConverter.cs" />
+    <Compile Include="Util\ErrorReporter.cs" />
     <Compile Include="Util\FloatEqualConverter.cs" />
     <Compile Include="Util\IntThresholdConverter.cs" />
     <Compile Include="Util\ModelType.cs" />
