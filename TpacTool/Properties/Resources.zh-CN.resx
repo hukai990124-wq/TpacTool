@@ -562,6 +562,60 @@
   <data name="Msgbox_Warning" xml:space="preserve">
     <value>警告</value>
   </data>
+  <data name="Msgbox_OperationFailed" xml:space="preserve">
+    <value>{0}“{1}”失败。&#10;路径：{2}&#10;可能原因：{3}&#10;异常详情：&#10;{4}</value>
+  </data>
+  <data name="Error_UnknownItem" xml:space="preserve">
+    <value>未知项目</value>
+  </data>
+  <data name="Error_UnknownPath" xml:space="preserve">
+    <value>未知路径</value>
+  </data>
+  <data name="ErrorOperation_BuildAssetList" xml:space="preserve">
+    <value>构建资源列表</value>
+  </data>
+  <data name="ErrorOperation_LoadPackage" xml:space="preserve">
+    <value>加载 TPAC 包</value>
+  </data>
+  <data name="ErrorOperation_FindPackages" xml:space="preserve">
+    <value>查找 TPAC 包</value>
+  </data>
+  <data name="ErrorOperation_ExportModel" xml:space="preserve">
+    <value>导出模型</value>
+  </data>
+  <data name="ErrorOperation_ExportTexture" xml:space="preserve">
+    <value>导出贴图</value>
+  </data>
+  <data name="ErrorOperation_ExportMaterial" xml:space="preserve">
+    <value>导出材质</value>
+  </data>
+  <data name="ErrorOperation_ExportAnimation" xml:space="preserve">
+    <value>导出动画</value>
+  </data>
+  <data name="ErrorCause_TruncatedOrCorrupt" xml:space="preserve">
+    <value>文件意外结束或内容已损坏。</value>
+  </data>
+  <data name="ErrorCause_InvalidData" xml:space="preserve">
+    <value>文件包含无效或不一致的数据。</value>
+  </data>
+  <data name="ErrorCause_UnsupportedFormat" xml:space="preserve">
+    <value>不支持此文件格式或版本。</value>
+  </data>
+  <data name="ErrorCause_AccessDenied" xml:space="preserve">
+    <value>访问被拒绝。请检查文件权限，以及文件是否正被其他程序占用。</value>
+  </data>
+  <data name="ErrorCause_MissingFile" xml:space="preserve">
+    <value>找不到所需的文件或目录。</value>
+  </data>
+  <data name="ErrorCause_FileSystem" xml:space="preserve">
+    <value>发生文件系统错误。请检查磁盘空间和文件访问权限。</value>
+  </data>
+  <data name="ErrorCause_MissingDependency" xml:space="preserve">
+    <value>无法解析被引用的资源。TPAC 包可能不完整，或依赖其他包。</value>
+  </data>
+  <data name="ErrorCause_Unknown" xml:space="preserve">
+    <value>无法自动判断原因，请查看下面的异常详情。</value>
+  </data>
   <data name="Preview_Center" xml:space="preserve">
     <value>焦点：</value>
   </data>

@@ -224,8 +224,15 @@ namespace TpacTool
 						break;
 				}
 				MessengerInstance.Send(string.Format("Export {0} ...", Asset.Name), MainViewModel.StatusEvent);
-				MaterialExporter.ExportToFolder(path, Asset, option);
-				MessengerInstance.Send(string.Format("{0} exported", Asset.Name), MainViewModel.StatusEvent);
+				try
+				{
+					MaterialExporter.ExportToFolder(path, Asset, option);
+					MessengerInstance.Send(string.Format("{0} exported", Asset.Name), MainViewModel.StatusEvent);
+				}
+				catch (Exception error)
+				{
+					ErrorReporter.Show(ErrorReporter.GetResourceString("ErrorOperation_ExportMaterial"), Asset.Name, path, error);
+				}
 			}
 		}
 

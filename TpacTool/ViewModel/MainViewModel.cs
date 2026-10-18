@@ -217,9 +217,22 @@ namespace TpacTool
 					MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
-			else if (dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length == 0)
+			else
 			{
-				if (MessageBox.Show(Resources.Msgbox_TpacNotFound, Resources.Msgbox_Info,
+				int topLevelPackageCount;
+				try
+				{
+					topLevelPackageCount = dir.GetFiles("*.tpac", SearchOption.TopDirectoryOnly).Length;
+				}
+				catch (Exception error)
+				{
+					ErrorReporter.Show(ErrorReporter.GetResourceString("ErrorOperation_FindPackages"),
+						ErrorReporter.GetItemName(dir.FullName), dir.FullName, error);
+					return;
+				}
+
+				if (topLevelPackageCount == 0 &&
+					MessageBox.Show(Resources.Msgbox_TpacNotFound, Resources.Msgbox_Info,
 						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
 				{
 					if (loadFromRecent)
@@ -237,13 +250,30 @@ namespace TpacTool
 			_loadingWindow.Owner = Application.Current.MainWindow;
 			MessengerInstance.Send<object>(null, LoadingViewModel.LoadingBeginEvent);
 			AssetManager = new AssetManager();
-			AssetManager.Load(dir, AssetManagerCallback);
+			try
+			{
+				AssetManager.Load(dir, AssetManagerCallback);
+			}
+			catch (Exception error)
+			{
+				ErrorReporter.Show(ErrorReporter.GetResourceString("ErrorOperation_FindPackages"),
+					ErrorReporter.GetItemName(dir.FullName), dir.FullName, error);
+				return;
+			}
 			if (_loadingWindow.ShowDialog() == true)
 			{
 				Settings.Default.UpdateWorkDir(dir);
 				Settings.Default.Save();
 				RefreshRecents();
-				AfterLoad();
+				try
+				{
+					AfterLoad();
+				}
+				catch (Exception error)
+				{
+					ErrorReporter.Show(ErrorReporter.GetResourceString("ErrorOperation_BuildAssetList"),
+						ErrorReporter.GetResourceString("Error_UnknownItem"), dir.FullName, error);
+				}
 			}
 		}
 
@@ -370,7 +400,15 @@ namespace TpacTool
 											LoadingViewModel.LoadingProgressEvent);
 				else
 				{
-					if (packagecount <= 0)
+					if (AssetManager.LoadError != null)
+					{
+						_loadingWindow.DialogResult = false;
+						_loadingWindow.Close();
+						var path = ErrorReporter.GetPackagePath(AssetManager.LoadError, AssetManager.WorkDir.FullName);
+						ErrorReporter.Show(ErrorReporter.GetResourceString("ErrorOperation_LoadPackage"),
+							ErrorReporter.GetItemName(path), path, AssetManager.LoadError);
+					}
+					else if (packagecount <= 0)
 					{
 						_loadingWindow.DialogResult = false;
 						MessageBox.Show(Resources.Msgbox_NoFileLoaded, Resources.Msgbox_Info,

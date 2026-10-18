@@ -112,7 +112,7 @@ namespace TpacTool.Lib
 			HeaderLoaded = true;
 
 			if (stream.ReadUInt32() != TPAC_MAGIC_NUMBER)
-				throw new IOException("Not a Tpac file: " + File.FullName);
+				throw new InvalidDataException("The file signature is not a TPAC signature.");
 			uint version = stream.ReadUInt32();
 			switch (version)
 			{
@@ -120,7 +120,7 @@ namespace TpacTool.Lib
 				case 2: // since 1.4.3
 					break;
 				default:
-					throw new Exception("Unsupported Tpac version: " + version);
+					throw new NotSupportedException("Unsupported TPAC version: " + version);
 			}
 			this.Guid = stream.ReadGuid();
 

@@ -412,11 +412,18 @@ namespace TpacTool
 				var path = _saveFileDialog.FileName;
 
 				MessengerInstance.Send(string.Format("Export {0} ...", assetName), MainViewModel.StatusEvent);
-				if (AssimpModelExporter.IsAssimpAvailable())
+				try
 				{
-					AssimpModelExporter.ExportToFile(path, model, skeleton, animation, morph, option, assimpOption, FrameRate);
+					if (AssimpModelExporter.IsAssimpAvailable())
+					{
+						AssimpModelExporter.ExportToFile(path, model, skeleton, animation, morph, option, assimpOption, FrameRate);
+					}
+					MessengerInstance.Send(string.Format("{0} exported", assetName), MainViewModel.StatusEvent);
 				}
-				MessengerInstance.Send(string.Format("{0} exported", assetName), MainViewModel.StatusEvent);
+				catch (Exception error)
+				{
+					ErrorReporter.Show(ErrorReporter.GetResourceString("ErrorOperation_ExportAnimation"), assetName, path, error);
+				}
 			}
 		}
 	}

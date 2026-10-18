@@ -6,11 +6,11 @@
 </a>
 
 <a href="../../releases/latest">
-		<img src="https://img.shields.io/github/v/release/szszss/TpacTool.svg?style=flat" />
+		<img src="https://img.shields.io/github/v/release/hukai990124-wq/TpacTool.svg?style=flat" />
 </a>
 
 <a href="../../blob/master/LICENSE">
-		<img src="https://img.shields.io/github/license/szszss/TpacTool.svg?style=flat" />
+		<img src="https://img.shields.io/github/license/hukai990124-wq/TpacTool.svg?style=flat" />
 </a>
 
 -------------------
@@ -18,6 +18,8 @@
 #### About
 
 TpacTool is an open source asset explorer which can open TPAC format files, view and export the contents.
+
+Current version: **0.4.2**, with clearer reports for TPAC loading and asset export failures. Download it from [Releases](../../releases/latest).
 
 TPAC (may be Taleworlds Package) is the asset archive format used by *Mount&Blade II: Bannerlord*. It was introduced at some time during the multiplayer beta, replacing the outdated BRF format of *Warband* and CRF format of early beta, and is still used today.
 

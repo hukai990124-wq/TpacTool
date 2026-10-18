@@ -149,8 +149,15 @@ namespace TpacTool
 					return;
 				}
 				MessengerInstance.Send(string.Format("Export {0} ...", Asset.Name), MainViewModel.StatusEvent);
-				TextureExporter.ExportToFile(path, Asset);
-				MessengerInstance.Send(string.Format("{0} exported", Asset.Name), MainViewModel.StatusEvent);
+				try
+				{
+					TextureExporter.ExportToFile(path, Asset);
+					MessengerInstance.Send(string.Format("{0} exported", Asset.Name), MainViewModel.StatusEvent);
+				}
+				catch (Exception error)
+				{
+					ErrorReporter.Show(ErrorReporter.GetResourceString("ErrorOperation_ExportTexture"), Asset.Name, path, error);
+				}
 			}
 		}
 	}
