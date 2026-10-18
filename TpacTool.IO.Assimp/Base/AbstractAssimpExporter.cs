@@ -122,6 +122,10 @@ namespace TpacTool.IO.Assimp
 																ICollection<Material> outList)
 		{
 			var dic = new Dictionary<TpacTool.Lib.Material, int>();
+			if (outList.Count == 0)
+				// Keep index 0 available for meshes whose material references are missing.
+				outList.Add(CreateDefaultMaterial());
+
 			int index = outList.Count;
 			foreach (var material in materials)
 			{
@@ -153,18 +157,33 @@ namespace TpacTool.IO.Assimp
 				index++;
 			}
 
-			if (outList.Count == 0)
-			{
-				// fix a bug of fbx exporting
-				var dummyMaterial = new Material();
-				dummyMaterial.Name = "empty_material";
-				dummyMaterial.ShadingMode = ShadingMode.Phong;
-				dummyMaterial.ColorAmbient = new Color4D(0, 0, 0, 1);
-				dummyMaterial.ColorDiffuse = new Color4D(1, 1, 1, 1);
-				outList.Add(dummyMaterial);
-			}
-
 			return dic;
+		}
+
+		private static Material CreateDefaultMaterial()
+		{
+			return new Material
+			{
+				Name = "empty_material",
+				ShadingMode = ShadingMode.Phong,
+				ColorAmbient = new Color4D(0, 0, 0, 1),
+				ColorDiffuse = new Color4D(1, 1, 1, 1)
+			};
+		}
+
+		internal static int ResolveMeshMaterialIndex(
+			TpacTool.Lib.Mesh mesh,
+			IDictionary<TpacTool.Lib.Material, int> matMapping,
+			bool supportsSecondMaterial,
+			int fallbackMaterialIndex)
+		{
+			if (mesh.Material.TryGetItem(out var material) && matMapping.TryGetValue(material, out var materialIndex))
+				return materialIndex;
+			if (supportsSecondMaterial && mesh.SecondMaterial.TryGetItem(out material) &&
+			    matMapping.TryGetValue(material, out materialIndex))
+				return materialIndex;
+
+			return fallbackMaterialIndex;
 		}
 
 		protected virtual Dictionary<TpacTool.Lib.Mesh, int> ExportMeshes(
@@ -330,9 +349,8 @@ namespace TpacTool.IO.Assimp
 					}
 				}
 
-				assMesh.MaterialIndex = 0;
-				if (!mesh.Material.IsEmpty() && matMapping.TryGetValue(mesh.Material.GetItem(), out var matIndex))
-					assMesh.MaterialIndex = matIndex;
+				assMesh.MaterialIndex = ResolveMeshMaterialIndex(
+					mesh, matMapping, SupportsSecondMaterial, fallbackMaterialIndex: 0);
 
 				outList.Add(assMesh);
 				dic[mesh] = index;

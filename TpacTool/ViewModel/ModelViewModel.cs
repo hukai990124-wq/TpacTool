@@ -114,11 +114,9 @@ namespace TpacTool
 				if (_selectedMesh != null)
 				{
 					SelectedMeshPrimaryMaterial =
-						_selectedMesh.Material.IsEmpty() ? 
-							null : _selectedMesh.Material.GetItem();
+						_selectedMesh.Material.TryGetItem(out var primaryMaterial) ? primaryMaterial : null;
 					SelectedMeshSecondMaterial =
-						_selectedMesh.SecondMaterial.IsEmpty() ? 
-							null : _selectedMesh.SecondMaterial.GetItem();
+						_selectedMesh.SecondMaterial.TryGetItem(out var secondMaterial) ? secondMaterial : null;
 					IsRigged = _selectedMesh.SkinDataSize > 0;
 					HasMorph = _selectedMesh.EditData != null
 						? _selectedMesh.EditData.Data.MorphFrames.Count > 0

@@ -74,7 +74,7 @@ namespace TpacTool.IO
 					}
 				}
 
-				if (exporter.SupportsSecondMaterial && mesh.Material.TryGetItem(out var mat2))
+				if (exporter.SupportsSecondMaterial && mesh.SecondMaterial.TryGetItem(out var mat2))
 				{
 					foreach (var texDep in mat2.Textures.Values)
 					{
